@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HC Services Dashboard | Integrated System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Custom Scrollbar for sleek look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+
+    <nav class="bg-white shadow-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-users-gear text-blue-600 text-2xl mr-3"></i>
+                    <span class="font-bold text-xl tracking-tight text-gray-900">HC Services <span class="text-blue-600">Portal</span></span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-500 italic" id="connection-status"><i class="fa-solid fa-circle text-green-500 text-xs"></i> Google Workspace Connected</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-20 pb-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-6">
+
+        <aside class="w-full md:w-1/4">
+            <div class="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Navigasi Akses</h3>
+                <nav class="space-y-2">
+                    <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium bg-blue-50 text-blue-700 transition-colors">
+                        <i class="fa-solid fa-chart-pie mr-2"></i> Dashboard & Data
+                    </button>
+                    <button onclick="switchTab('internal')" id="btn-internal" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                        <i class="fa-solid fa-lock mr-2"></i> Internal (Karyawan)
+                    </button>
+                    <button onclick="switchTab('external')" id="btn-external" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                        <i class="fa-solid fa-globe mr-2"></i> Eksternal (Publik)
+                    </button>
+                    <button onclick="switchTab('faq')" id="btn-faq" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                        <i class="fa-solid fa-circle-question mr-2"></i> FAQ Center
+                    </button>
+                </nav>
+
+                <div class="mt-8 border-t pt-6">
+                    <h4 class="text-xs font-semibold text-gray-400 mb-2">Live Status (Sheet Data)</h4>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm">Kuota Magang</span>
+                        <span class="font-bold text-green-600">12/20</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-green-600 h-2 rounded-full" style="width: 60%"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="w-full md:w-3/4">
+            
+            <div id="dashboard" class="content-section block fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                        <h4 class="text-gray-500 text-sm">Total Pengajuan KP/PKL (Bulan Ini)</h4>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">45 <span class="text-xs text-green-500 font-normal"><i class="fa-solid fa-arrow-up"></i> +12%</span></p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
+                        <h4 class="text-gray-500 text-sm">Tamu Berkunjung Hari Ini</h4>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">8 <span class="text-xs text-gray-400 font-normal">Reserved</span></p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="font-bold text-gray-800 mb-4">Statistik Divisi Penerima Magang (Live Data)</h3>
+                    <div class="h-64">
+                        <canvas id="internshipChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-4 text-center">*Data divisualisasikan real-time dari Google Spreadsheet HC.</p>
+                </div>
+            </div>
+
+            <div id="internal" class="content-section hidden fade-in">
+                <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6 flex items-start">
+                    <i class="fa-solid fa-shield-halved text-blue-600 mt-1 mr-3"></i>
+                    <div>
+                        <h3 class="font-bold text-blue-800">Area Terbatas</h3>
+                        <p class="text-sm text-blue-700">Halaman ini khusus untuk karyawan dan internal stakeholder.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer flex justify-between items-center group">
+                        <div>
+                            <h4 class="font-bold text-gray-800 group-hover:text-blue-600">SOP Pengajuan Anak Magang</h4>
+                            <p class="text-sm text-gray-500">Panduan lengkap penerimaan KP/PKL untuk Mentor.</p>
+                        </div>
+                        <i class="fa-solid fa-file-pdf text-gray-300 group-hover:text-red-500 text-xl"></i>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer flex justify-between items-center group">
+                        <div>
+                            <h4 class="font-bold text-gray-800 group-hover:text-blue-600">Database Jobdesk & Kompetensi</h4>
+                            <p class="text-sm text-gray-500">Akses dokumen uraian tugas per divisi.</p>
+                        </div>
+                        <i class="fa-solid fa-briefcase text-gray-300 group-hover:text-blue-500 text-xl"></i>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer flex justify-between items-center group">
+                        <div>
+                            <h4 class="font-bold text-gray-800 group-hover:text-blue-600">Konversi Magang Mandiri (Internal)</h4>
+                            <p class="text-sm text-gray-500">Form validasi Magenta/Kampus Merdeka untuk HC.</p>
+                        </div>
+                        <i class="fa-solid fa-graduation-cap text-gray-300 group-hover:text-purple-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div id="external" class="content-section hidden fade-in">
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-user-graduate text-blue-600"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Pengajuan KP / PKL</h3>
+                        <p class="text-sm text-gray-500 mb-4">Bagi mahasiswa yang ingin mengajukan permohonan praktik kerja lapangan.</p>
+                        <ul class="text-sm text-gray-600 mb-4 space-y-1">
+                            <li><i class="fa-solid fa-check text-green-500 text-xs"></i> Minimal durasi 2 bulan</li>
+                            <li><i class="fa-solid fa-check text-green-500 text-xs"></i> Wajib lampiran proposal</li>
+                        </ul>
+                        <button class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 transition">Isi Formulir Pengajuan</button>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-file-contract text-purple-600"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Link Konversi Magang</h3>
+                        <p class="text-sm text-gray-500 mb-4">Formulir administrasi untuk kelengkapan nilai dan sertifikat.</p>
+                        <button class="w-full bg-white border border-gray-300 text-gray-700 py-2 rounded-lg text-sm hover:bg-gray-50 transition">Akses Dokumen</button>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 col-span-1 md:col-span-2">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">Reservasi Kunjungan Tamu</h3>
+                                <p class="text-sm text-gray-500">Harap lakukan reservasi H-1 sebelum kedatangan.</p>
+                            </div>
+                            <i class="fa-solid fa-calendar-check text-gray-300 text-2xl"></i>
+                        </div>
+                        <form class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <input type="text" placeholder="Nama Lengkap" class="border p-2 rounded text-sm w-full">
+                            <input type="date" class="border p-2 rounded text-sm w-full">
+                            <button class="bg-gray-800 text-white p-2 rounded text-sm w-full hover:bg-black">Submit Reservasi</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="faq" class="content-section hidden fade-in">
+                <h3 class="font-bold text-xl mb-4 text-gray-800">Frequently Asked Questions</h3>
+                <div class="space-y-3">
+                    <div class="bg-white border rounded-lg overflow-hidden">
+                        <button class="w-full text-left p-4 focus:outline-none flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-sm">Berapa lama minimal durasi magang?</span>
+                            <i class="fa-solid fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div class="p-4 pt-0 text-sm text-gray-600 hidden bg-gray-50">
+                            Sesuai kebijakan perusahaan, minimal durasi magang adalah 2 bulan efektif kerja untuk memastikan transfer knowledge yang memadai.
+                        </div>
+                    </div>
+                     <div class="bg-white border rounded-lg overflow-hidden">
+                        <button class="w-full text-left p-4 focus:outline-none flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-sm">Apakah magang mendapatkan uang saku?</span>
+                            <i class="fa-solid fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div class="p-4 pt-0 text-sm text-gray-600 hidden bg-gray-50">
+                            Untuk magang reguler (KP/PKL) bersifat non-paid. Namun untuk program Management Trainee atau Project-Based tertentu, terdapat benefit sesuai kesepakatan.
+                        </div>
+                    </div>
+                     <div class="bg-white border rounded-lg overflow-hidden">
+                        <button class="w-full text-left p-4 focus:outline-none flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-sm">Bagaimana alur pengajuan kunjungan industri?</span>
+                            <i class="fa-solid fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div class="p-4 pt-0 text-sm text-gray-600 hidden bg-gray-50">
+                            Pengajuan wajib melalui surat resmi minimal H-14, kemudian mengisi form reservasi tamu di dashboard bagian Eksternal.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="fixed bottom-6 right-6 z-50">
+        <div id="chat-window" class="hidden bg-white w-80 h-96 rounded-xl shadow-2xl flex flex-col mb-4 border border-gray-200">
+            <div class="bg-blue-600 text-white p-3 rounded-t-xl flex justify-between items-center">
+                <span class="text-sm font-bold"><i class="fa-solid fa-robot mr-2"></i>HC Assistant</span>
+                <button onclick="toggleChat()" class="text-white hover:text-gray-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="chat-messages" class="flex-1 p-3 overflow-y-auto bg-gray-50 text-sm space-y-2">
+                <div class="bg-white p-2 rounded-lg rounded-tl-none shadow-sm max-w-[80%] border text-gray-700">
+                    Halo! Ada yang bisa saya bantu terkait layanan Human Capital?
+                </div>
+            </div>
+            <div class="p-3 border-t bg-white rounded-b-xl flex gap-2">
+                <input type="text" id="chat-input" placeholder="Tanya sesuatu..." class="flex-1 border rounded-full px-3 py-1 text-sm focus:outline-none focus:border-blue-500">
+                <button onclick="sendMessage()" class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-700">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </div>
+        </div>
+        <button onclick="toggleChat()" class="bg-blue-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 transition-transform transform hover:scale-105">
+            <i class="fa-solid fa-comment-dots text-2xl"></i>
+        </button>
+    </div>
+
+    <script>
+        // 1. Logic Tab Switching
+        function switchTab(tabId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+            // Show selected
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Reset nav styles
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-50', 'text-blue-700');
+                btn.classList.add('text-gray-600');
+            });
+            // Active nav style
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('text-gray-600');
+            activeBtn.classList.add('bg-blue-50', 'text-blue-700');
+        }
+
+        // 2. Logic FAQ Accordion
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.fa-chevron-down');
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+            icon.style.transition = 'transform 0.3s';
+        }
+
+        // 3. Logic Chatbot (Mock API)
+        function toggleChat() {
+            document.getElementById('chat-window').classList.toggle('hidden');
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('chat-messages');
+            const text = input.value;
+            
+            if (!text) return;
+
+            // User Message
+            messages.innerHTML += `<div class="flex justify-end"><div class="bg-blue-600 text-white p-2 rounded-lg rounded-tr-none shadow-sm max-w-[80%]">${text}</div></div>`;
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            // Simulate API Loading
+            messages.innerHTML += `<div id="typing" class="text-xs text-gray-400 italic">Sedang mengetik...</div>`;
+            
+            // Mock API Response (Nanti diganti fetch ke backend AI)
+            setTimeout(() => {
+                document.getElementById('typing').remove();
+                let reply = "Maaf, saya hanya bot simulasi saat ini.";
+                if(text.toLowerCase().includes('pkl') || text.toLowerCase().includes('magang')) {
+                    reply = "Untuk info PKL, silakan cek bagian Eksternal. Minimal durasi adalah 2 bulan.";
+                } else if (text.toLowerCase().includes('sop')) {
+                    reply = "SOP dapat diunduh di bagian Internal oleh karyawan yang berwenang.";
+                }
+                
+                messages.innerHTML += `<div class="bg-white p-2 rounded-lg rounded-tl-none shadow-sm max-w-[80%] border text-gray-700">${reply}</div>`;
+                messages.scrollTop = messages.scrollHeight;
+            }, 1000);
+        }
+
+        // 4. Logic Visualization (Chart.js + Mock Google Sheet Data)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulasi Data dari Google Sheet (JSON)
+            // Di real app: fetch('URL_GOOGLE_APPS_SCRIPT_JSON')
+            const mockSheetData = {
+                labels: ['IT Development', 'Human Capital', 'Finance', 'Marketing', 'Ops'],
+                data: [12, 5, 3, 8, 15]
+            };
+
+            const ctx = document.getElementById('internshipChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: mockSheetData.labels,
+                    datasets: [{
+                        label: 'Jumlah Anak Magang Aktif',
+                        data: mockSheetData.data,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
