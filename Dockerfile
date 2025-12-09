@@ -12,6 +12,10 @@ RUN npm ci
 # Copy the rest of the application code
 COPY . .
 
+# Accept API Key as Build Argument (Required for Vite Build)
+ARG VITE_GROQ_API_KEY
+ENV VITE_GROQ_API_KEY=$VITE_GROQ_API_KEY
+
 # Build the application
 RUN npm run build
 
