@@ -61,6 +61,7 @@ const Chatbot = () => {
             }
         } catch (error) {
             setMessages(prev => [...prev, { type: 'bot', text: "Maaf, terjadi kesalahan pada sistem." }]);
+        } finally {
             setIsLoading(false);
         }
     };

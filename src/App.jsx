@@ -1,38 +1,24 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/layout/Layout';
-import Dashboard from './pages/Dashboard';
-import Internal from './pages/Internal';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import PublicExternalServices from './pages/PublicExternalServices';
 import PublicInternalServices from './pages/PublicInternalServices';
-// import External from './pages/External'; // No longer used in main layout
-import FAQ from './pages/FAQ';
-import Chatbot from './components/Chatbot';
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Public External Services Route - Standalone (No Sidebar) */}
-        <Route path="/external" element={<PublicExternalServices />} />
+        {/* Default Route: External Services (Home) */}
+        <Route path="/" element={<PublicExternalServices />} />
 
-        {/* Public Internal Services Route - Standalone (No Sidebar) */}
-        <Route path="/internal-public" element={<PublicInternalServices />} />
+        {/* Explicit Route for External */}
+        <Route path="/external" element={<Navigate to="/" replace />} />
 
-        {/* Dashboard and Internal Routes - With Sidebar */}
-        <Route
-          path="/*"
-          element={
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/internal" element={<Internal />} />
-                <Route path="/faq" element={<FAQ />} />
-              </Routes>
-              <Chatbot />
-            </Layout>
-          }
-        />
+        {/* Internal Services Route */}
+        <Route path="/internal" element={<PublicInternalServices />} />
+        <Route path="/internal-public" element={<Navigate to="/internal" replace />} />
+
+        {/* Catch all - Redirect to Home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

@@ -137,34 +137,27 @@ const PublicExternalServices = () => {
                         <div className="h-px w-10 bg-slate-300"></div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <FeatureCard
                             title="SOP Pengajuan KP dan PKL"
                             description="Lihat SOP pengajuan KP dan PKL"
                             icon={FileText}
                             actionText="Lihat SOP"
-                            href="#"
-                        />
-                        <FeatureCard
-                            title="Konversi Magang"
-                            description="Ajukan konversi kredit magang. Durasi minimum 2 bulan diperlukan."
-                            icon={FileBadge}
-                            actionText="Ajukan Konversi"
-                            href="#"
+                            href="https://drive.google.com/file/d/1nUCZgqKBQxkMFQH2SRc4ZFA8gBZQAlbO/view?usp=sharing"
                         />
                         <FeatureCard
                             title="Pengajuan KP/PKL"
                             description="Kirimkan aplikasi Kerja Praktik / PKL Anda. Termasuk formulir dan persyaratan."
                             icon={Users}
                             actionText="Lihat Persyaratan"
-                            href="#"
+                            href="https://wa.me/6287819881108?text=Halo, saya ingin mengajukan KP/PKL."
                         />
                         <FeatureCard
                             title="Reservasi Tamu"
                             description="Jadwalkan kunjungan atau pertemuan. Pesan slot Anda untuk kunjungan perusahaan."
                             icon={Calendar}
                             actionText="Pesan Kunjungan"
-                            href="#"
+                            href="https://docs.google.com/forms/d/1EkrDj10p6LwfSH8LC9JxXEstJk7AwCej5U-ER9yMm6k/edit?usp=drive_web&ouid=101940004713204849510"
                         />
                     </div>
                 </motion.div>
@@ -233,8 +226,8 @@ const PublicExternalServices = () => {
             <footer className="bg-slate-900 text-slate-400 py-16 mt-20 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
                 <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-                    <img src="/images/len-logo.png" alt="Len Logo" className="h-12 w-auto mx-auto mb-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500" />
-                    <p className="font-medium text-slate-300">&copy; 2024 Human Capital Services. All rights reserved.</p>
+                    <img src="len-logo.png" alt="Len Logo" className="h-50 w-auto mx-auto mb-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500" />
+                    <p className="font-medium text-slate-300">&copy; 2026 Human Capital Services. All rights reserved.</p>
                 </div>
             </footer>
 
